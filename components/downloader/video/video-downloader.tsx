@@ -77,7 +77,7 @@ const VideoDownloader = ({ videoInfo }: { videoInfo: any }) => {
               <Check className="mr-2 h-5 w-5 text-green-500" />
               <div>
                 <p className="font-medium text-green-500">Download Complete!</p>
-                <p className="text-sm text-green-400">Your file is ready.</p>
+                <p className="text-sm text-green-400">Your file is ready. Downloaded by Vikki Server</p>
               </div>
             </div>
           )}
