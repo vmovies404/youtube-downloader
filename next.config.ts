@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /** IMPORTANT: This is required for Docker deployment */
+  output: 'standalone',
+
   images: {
     remotePatterns: [
       {
@@ -9,6 +11,15 @@ const nextConfig: NextConfig = {
         hostname: 'i.ytimg.com',
       },
     ],
+  },
+
+  // Optional but recommended settings
+  reactStrictMode: true,
+  swcMinify: true,
+
+  // Reduce bundle size
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
   },
 }
 
