@@ -1,37 +1,34 @@
 # ==================== BUILD STAGE ====================
 FROM node:20-alpine AS builder
 
-# Install system dependencies + yt-dlp + ffmpeg
+# Install system dependencies
 RUN apk add --no-cache \
     python3 \
     py3-pip \
     ffmpeg \
     curl \
-    && pip3 install --no-cache-dir --break-system-packages yt-dlp \
-    && yt-dlp --version   # Verify installation
+    && pip3 install --no-cache-dir --break-system-packages yt-dlp
 
 WORKDIR /app
 
-# Enable corepack for pnpm
+# Enable pnpm using corepack (no global install needed)
 RUN corepack enable pnpm
 
-# Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install all dependencies
+# Install all dependencies (including dev for build)
 RUN pnpm install --frozen-lockfile
 
-# Copy source code
 COPY . .
 
-# Build with standalone output (highly recommended for Docker)
+# Build the app
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
 # ==================== PRODUCTION STAGE ====================
 FROM node:20-alpine AS runner
 
-# Install only runtime dependencies (lighter)
+# Install runtime dependencies (ffmpeg + yt-dlp)
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -46,26 +43,28 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Create non-root user for security
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 
-# Create downloads directory (important for Render)
+# Create downloads folder
 RUN mkdir -p /app/downloads \
     && chown -R nextjs:nodejs /app
 
-# Copy built app from builder
+# Copy standalone output from builder
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Install only production dependencies
+# Copy package.json for production install
 COPY --from=builder /app/package.json ./
+
+# Install only production dependencies
 RUN corepack enable pnpm && pnpm install --prod --frozen-lockfile
 
 USER nextjs
 
 EXPOSE 3000
 
-# Start the standalone server (much more reliable than pnpm start)
+# Use the standalone server.js created by Next.js
 CMD ["node", "server.js"]
