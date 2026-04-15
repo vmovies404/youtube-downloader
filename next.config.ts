@@ -1,8 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /** IMPORTANT: This is required for Docker deployment */
-  output: 'standalone',
+  output: 'standalone',           // ← REQUIRED for reliable Docker deploy
 
   images: {
     remotePatterns: [
@@ -13,13 +12,12 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Optional but recommended settings
   reactStrictMode: true,
   swcMinify: true,
 
-  // Reduce bundle size
+  // Recommended for Next.js 15 + Docker
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    optimizePackageImports: ['lucide-react', 'youtubei.js'],
   },
 }
 
