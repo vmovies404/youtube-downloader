@@ -11,7 +11,7 @@ const HomePage = () => {
           <div className="container mx-auto px-4 md:px-6">
             <div className="mb-10 space-y-4 text-center">
               <h1 className="bg-gradient-to-r from-blue-500 via-violet-500 to-purple-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl">
-                YouTube Downloader
+                Vikki_YouTube Downloader
               </h1>
               <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
                 Download videos and playlists from YouTube with custom options
