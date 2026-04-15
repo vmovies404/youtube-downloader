@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'YouTube Downloader',
+  title: 'Vikki YouTube Downloader',
   description: 'Download videos and playlists from YouTube with custom options',
 }
 
